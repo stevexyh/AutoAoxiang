@@ -20,6 +20,12 @@ AutoAoxiang
 ### 1. `autoNCP.py` 自动提交疫情报告 
 - 直接运行 `autoNCP.py`
 - 如果缺少包, 运行 `pip install -r packages.txt`
+---
+### `CHANGELOG`
+
+`2020.2.16 by Steve X`
+- 添加了颜色显示效果
 
 ---
 `Developed by Steve X`
+[GitHub](https://github.com/Steve-Xyh/AutoAoxiang)

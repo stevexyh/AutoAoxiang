@@ -4,6 +4,7 @@
 import requests
 import getpass
 from bs4 import BeautifulSoup
+from functions.formatString import setColor
 
 def getToken(url):
     '''
@@ -50,13 +51,13 @@ def login(user = '', passwd = '', urlLogin = 'https://uis.nwpu.edu.cn/cas/login'
     status = res.find('登录成功') != -1
 
     if status:
-        print('登录成功')
+        print(setColor(string = '登录成功√', color = 'greenFore'))
     else:
         if res.find('密码错误') != -1:
-            print('密码错误, 请重试')
+            print(setColor(string = '密码错误, 请重试', color = 'redBack'))
         else:
             print(res)
-            print('登录失败, 请重试')
+            print(setColor(string = '登录失败, 请重试', color = 'redBack'))
 
     return session, status
 
