@@ -64,6 +64,7 @@ def log_en(dic):
 
 
 def setColor(string, color):
+    colorama.init(autoreset = True)
     convertColor = {
         'redFore': colorama.Fore.RED + colorama.Back.RESET, 
         'redBack': colorama.Fore.WHITE + colorama.Back.RED,
