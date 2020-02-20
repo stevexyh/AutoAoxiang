@@ -5,6 +5,7 @@ import requests
 import getpass
 from bs4 import BeautifulSoup
 from . import formatString
+from .getInfo import remove_cache
 
 def getToken(url):
     '''
@@ -48,9 +49,8 @@ def login(user = '', passwd = '', urlLogin = 'https://uis.nwpu.edu.cn/cas/login'
     }
 
     res = session.post(url = urlLogin, data = loginData, headers = header).text
-    status = res.find('登录成功') != -1
 
-    if status:
+    if res.find('登录成功') != -1:
         print(formatString.setColor(string = '登录成功√', color = 'greenFore'))
         status = 1
     else:
@@ -63,6 +63,28 @@ def login(user = '', passwd = '', urlLogin = 'https://uis.nwpu.edu.cn/cas/login'
             status = 0
 
     return session, status
+
+
+def login_check(user = '', passwd = ''):
+    '''
+    检查登录状态, 若登录失败则反复尝试
+    '''
+
+    session, status = login(user = user, passwd = passwd)
+    while True:
+        if status == 1:
+            return session
+        else:
+            if status == -1:
+                remove_cache()
+                exit(-1)
+            else:
+                print('正在重新登录...')
+                session, status = login(user = user, passwd = passwd)
+
+    return session
+
+
 
 # if __name__ == "__main__":
 #     username = str(input('学号:'))

@@ -3,13 +3,20 @@
 '''
 此脚本用于自动填写NCP疫情通报调查表
 '''
+try:
+    import getpass
+    import datetime
+    # import schedule
+    import functions.formatString as fs
+    from time import sleep
+    from urllib import parse
+    from functions.loginAoxiang import login_check
+    from functions.getInfo import remove_cache, get_info
+except ModuleNotFoundError:
+    error_info = '缺少函数库, 运行 pip install -r packages.txt 命令后重试'
+    print(error_info)
+    exit(-1)
 
-import getpass
-import datetime
-import schedule
-from urllib import parse
-from functions.loginAoxiang import login
-from functions.formatString import *
 
 def submitForm(user = '', passwd = ''):
     '''
@@ -17,15 +24,7 @@ def submitForm(user = '', passwd = ''):
     参数: 用户名, 密码, 所在地点
     '''
 
-    session, status = login(user = user, passwd = passwd)
-    while True:
-        if status == 1:
-            break
-        elif status == -1:
-            exit(-1)
-        elif status == 0:
-            print('正在重新登录...')
-            status = login(user = user, passwd = passwd)
+    session = login_check(user = user, passwd = passwd)
 
     #表格url与提交url不同, 否则提交失败
     urlForm = 'http://yqtb.nwpu.edu.cn/wx/ry/jrsb.jsp'
@@ -89,30 +88,34 @@ def submitForm(user = '', passwd = ''):
         '是否隔离': '否',
     }
 
+    print('准备获取表单...')
     session.get(urlForm)
+
+    print('已获取表单, 准备提交...')
     session.post(url = urlSubmit, data = formData, headers = formHeaders)
     res = session.get(urlForm).text
+    session.close()
 
     #成功信息, 此处为原网页设置, 不可随意更改
     success = '您已成功提交今日上报，重新提交将覆盖上一次的信息。'
     status = res.find(success)
 
     if status != -1:
-        log_cn(logData)
+        fs.log_cn(logData)
         print(success)
 
         global post_time, hrs
         post_time = datetime.datetime.now()
         next_post = post_time + datetime.timedelta(hours = hrs)
         next_dict = {'下次提交时间:': next_post.strftime('%Y-%m-%d %H:%M:%S')}
-        log_line(next_dict)
+        fs.log_line(next_dict)
         print('-' * 100)
 
         return True
     else:
         # print(res)
         # print(get)
-        print(setColor(string = '提交失败, 请重试', color = 'redBack'))
+        print(fs.setColor(string = '提交失败, 请重试', color = 'redBack'))
         print(status)
         return False
 
@@ -124,16 +127,27 @@ if __name__ == "__main__":
     ''' + '\n' + '-' * 100
 
     print(headerInfo)
-    username = str(input('学号:'))
-    password = str(getpass.getpass('密码:'))
-    hrs = float(input('定时运行间隔时间(单位: 小时):'))
-    location = ''
+    # username = str(input('学号:'))
+    # password = str(getpass.getpass('密码:'))
+    # location = ''
+
+    username, password, location = get_info(is_input = False)
+
+    hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
+    if hrs == '':
+        hrs = 1
+    else:
+        hrs = float(hrs)
+
     post_time = datetime.datetime.now()
 
     #首次运行提交
-    submitForm(user = username, passwd = password)
+    # submitForm(user = username, passwd = password)
 
     #间隔提交
-    schedule.every(hrs).hours.do(submitForm, username, password)
+    # schedule.every(hrs).seconds.do(submitForm, username, password)
+
     while True:
-        schedule.run_pending()
+        # schedule.run_pending()
+        submitForm(user = username, passwd = password)
+        # sleep(hrs * 3600)
