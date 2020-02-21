@@ -48,7 +48,7 @@ def submitForm(user = '', passwd = ''):
 
         #所在城市编码 / 名称
         'szcsbm': '3',
-        'szcsmc': parse.quote(location),
+        'szcsmc': location,
 
         #是否经停 / 说明
         'sfjt': '0',
@@ -113,8 +113,6 @@ def submitForm(user = '', passwd = ''):
 
         return True
     else:
-        # print(res)
-        # print(get)
         print(fs.setColor(string = '提交失败, 请重试', color = 'redBack'))
         print(status)
         return False
@@ -127,27 +125,11 @@ if __name__ == "__main__":
     ''' + '\n' + '-' * 100
 
     print(headerInfo)
-    # username = str(input('学号:'))
-    # password = str(getpass.getpass('密码:'))
-    # location = ''
 
     username, password, location = get_info(is_input = False)
-
     hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
-    if hrs == '':
-        hrs = 1
-    else:
-        hrs = float(hrs)
-
-    post_time = datetime.datetime.now()
-
-    #首次运行提交
-    # submitForm(user = username, passwd = password)
-
-    #间隔提交
-    # schedule.every(hrs).seconds.do(submitForm, username, password)
+    hrs = 1 if hrs == '' else float(hrs)
 
     while True:
-        # schedule.run_pending()
         submitForm(user = username, passwd = password)
-        # sleep(hrs * 3600)
+        sleep(hrs * 3600)
