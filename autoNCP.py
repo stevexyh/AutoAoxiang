@@ -103,7 +103,7 @@ def submitForm(user='', passwd=''):
 
     # 成功信息, 此处为原网页设置, 不可随意更改
     success = '您已成功提交今日上报，重新提交将覆盖上一次的信息。'
-    status = res.find(success)
+    status = res.find('重新提交将覆盖上一次的信息')
 
     if status != -1:
         fs.log_cn(logData)
