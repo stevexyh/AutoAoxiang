@@ -16,11 +16,13 @@ logData = {
 }
 
 
-def log_line(dic):
-    """
+def log_line(dic: dict):
+    '''
     中文单行log
-    :param dic: log dict(e.g. {name: value})
-    """
+
+    #### Parameters::
+        dic: log dict(e.g. {name: value})
+    '''
 
     for key in dic:
         flg = dic[key] is not None
@@ -30,7 +32,7 @@ def log_line(dic):
     print(res)
 
 
-def log_cn(dic):
+def log_cn(dic: dict):
     """
     中文多行log
     :param dic: log dict(e.g. {name: value})

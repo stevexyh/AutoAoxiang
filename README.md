@@ -27,7 +27,13 @@ AutoAoxiang
 ### 1. `autoNCP.py` 自动提交疫情报告 
 - 直接运行 `autoNCP.py`
 - 如果缺少包, 运行 `pip install -r packages.txt`
-- 目前版本运行时不可关闭窗口, 否则程序终止
+- 目前版本运行时不可关闭窗口, 否则程序终止  
+
+
+### 2. `autoNCP.py` 服务器或后台定时提交疫情报告  
+- `nohup ./autoNCP.py server &`  
+
+
 ---
 ### `CHANGELOG`
 `2020.2.21 by Steve X`

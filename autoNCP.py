@@ -4,22 +4,20 @@
 此脚本用于自动填写NCP疫情通报调查表
 '''
 try:
-    import os
-    import getpass
+    import sys
     import datetime
     # import schedule
     import functions.formatString as fs
     from time import sleep
-    from urllib import parse
     from functions.loginAoxiang import login_check
-    from functions.getInfo import remove_cache, get_info
+    from functions.getInfo import get_info
 except ModuleNotFoundError:
     error_info = '缺少函数库, 运行 pip install -r packages.txt 命令后重试'
     print(error_info)
     exit(-1)
 
 
-def submitForm(user='', passwd=''):
+def submitForm(user='', passwd='', loc_code='', loc_name=''):
     '''
     提交表格
     参数: 用户名, 密码, 所在地点
@@ -30,10 +28,6 @@ def submitForm(user='', passwd=''):
     # 表格url与提交url不同, 否则提交失败
     urlForm = 'http://yqtb.nwpu.edu.cn/wx/ry/jrsb.jsp'
     urlSubmit = 'http://yqtb.nwpu.edu.cn/wx/ry/ry_util.jsp'
-    global location
-
-    if location == '':
-        location = str(input('地点:'))
 
     # 表格请求头
     formHeaders = {
@@ -48,8 +42,8 @@ def submitForm(user='', passwd=''):
         'userLoginId': user,
 
         # 所在城市编码 / 名称
-        'szcsbm': '3',
-        'szcsmc': location,
+        'szcsbm': loc_code,
+        'szcsmc': loc_name,
 
         # 是否经停 / 说明
         'sfjt': '0',
@@ -84,7 +78,8 @@ def submitForm(user='', passwd=''):
     }
 
     logData = {
-        '所在位置': location,
+        '所在位置': loc_name,
+        '位置编码': loc_code,
         '是否经停湖北': '否',
         '接触湖北籍人员': '否',
         '接触确诊疑似': '否',
@@ -110,7 +105,7 @@ def submitForm(user='', passwd=''):
         fs.log_cn(logData)
         print(success)
 
-        global post_time, hrs
+        global hrs
         post_time = datetime.datetime.now()
         next_post = post_time + datetime.timedelta(hours=hrs)
         next_dict = {'下次提交时间:': next_post.strftime('%Y-%m-%d %H:%M:%S')}
@@ -132,15 +127,26 @@ if __name__ == "__main__":
 
     print(headerInfo)
 
-    username, password, location = get_info(is_input=False)
+    username, password, location_code, location_name = get_info(is_input=False)
+
+    try:
+        if sys.argv[1] == 'server':
+            server = True
+    except IndexError:
+        server = False
 
     # 服务器端运行
-    if os.sys.platform.lower() == 'linux':
+    if server:
         hrs = 6
     else:
         hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
         hrs = 1 if hrs == '' else float(hrs)
 
     while True:
-        submitForm(user=username, passwd=password)
+        submitForm(
+            user=username,
+            passwd=password,
+            loc_code=location_code,
+            loc_name=location_name
+        )
         sleep(hrs * 3600)
