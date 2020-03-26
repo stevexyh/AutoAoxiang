@@ -4,6 +4,7 @@
 此脚本用于自动填写NCP疫情通报调查表
 '''
 try:
+    import os
     import getpass
     import datetime
     # import schedule
@@ -132,8 +133,13 @@ if __name__ == "__main__":
     print(headerInfo)
 
     username, password, location = get_info(is_input=False)
-    hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
-    hrs = 1 if hrs == '' else float(hrs)
+
+    # 服务器端运行
+    if os.sys.platform.lower() == 'linux':
+        hrs = 6
+    else:
+        hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
+        hrs = 1 if hrs == '' else float(hrs)
 
     while True:
         submitForm(user=username, passwd=password)

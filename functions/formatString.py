@@ -4,8 +4,9 @@
 import datetime
 import colorama
 
+colorama.init(autoreset=True)
 logData = {
-    '所在位置': '北京',
+    '所在位置': 'Location',
     '是否经停湖北': '否',
     '接触湖北籍人员': '否',
     '接触确诊疑似': '否',
@@ -23,10 +24,10 @@ def log_line(dic):
 
     for key in dic:
         flg = dic[key] is not None
-        res = str(key).ljust(12,chr(12288))
-        res += (setColor(dic[key], color = 'yellowFore') if flg else '').ljust(20,chr(12288)) + '\n'
+        res = str(key).ljust(12, chr(12288))
+        res += (setColor(dic[key], color='yellowFore')
+                if flg else '').ljust(20, chr(12288)) + '\n'
     print(res)
-
 
 
 def log_cn(dic):
@@ -37,11 +38,13 @@ def log_cn(dic):
     formLen = 40
 
     res = '-' * formLen + '\n'
-    res += '[' + setColor(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), color = 'greenFore') + ']\n'
+    res += '[' + setColor(datetime.datetime.now().strftime(
+        '%Y-%m-%d %H:%M:%S'), color='greenFore') + ']\n'
     for key in dic:
         flg = dic[key] is not None
-        res += str(key).ljust(12,chr(12288))
-        res += (setColor(dic[key], color = 'yellowFore') if flg else '').ljust(20,chr(12288)) + '\n'
+        res += str(key).ljust(12, chr(12288))
+        res += (setColor(dic[key], color='yellowFore')
+                if flg else '').ljust(20, chr(12288)) + '\n'
     res += '-' * formLen
     print(res)
 
@@ -54,19 +57,21 @@ def log_en(dic):
     formLen = 40
 
     res = '-' * formLen + '\n'
-    res += '[' + setColor(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), color = 'greenFore') + ']\n'
+    res += '[' + setColor(datetime.datetime.now().strftime(
+        '%Y-%m-%d %H:%M:%S'), color='greenFore') + ']\n'
     for key in dic:
         flg = dic[key] is not None
         res += str(key).ljust(20)
-        res += (setColor(dic[key], color = 'yellowFore') if flg else '').ljust(20) + '\n'
+        res += (setColor(dic[key], color='yellowFore')
+                if flg else '').ljust(20) + '\n'
     res += '-' * formLen
     print(res)
 
 
 def setColor(string, color):
-    colorama.init(autoreset = True)
+    '''设置颜色'''
     convertColor = {
-        'redFore': colorama.Fore.RED + colorama.Back.RESET, 
+        'redFore': colorama.Fore.RED + colorama.Back.RESET,
         'redBack': colorama.Fore.WHITE + colorama.Back.RED,
 
         'greenFore': colorama.Fore.GREEN + colorama.Back.RESET,
