@@ -26,7 +26,7 @@ def get_info(is_input=True):
     else:
         try:
             user_name, password, location_code, location_name = open(cache_file).read().split('\n')
-        except (FileNotFoundError,ValueError):
+        except (FileNotFoundError, ValueError):
             remove_cache()
             return write_info()
     return user_name, password, location_code, location_name
