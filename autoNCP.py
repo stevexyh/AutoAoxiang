@@ -132,13 +132,17 @@ if __name__ == "__main__":
     try:
         if sys.argv[1] == 'server':
             server = True
+        try:
+            hrs = float(sys.argv[2])
+        except:
+            print('请输入时间(小时)')
+            print('Usage: python3 autoNCP.py server 12')
+            exit(-1)
     except IndexError:
         server = False
 
     # 服务器端运行
-    if server:
-        hrs = 6
-    else:
+    if not server:
         hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
         hrs = 1 if hrs == '' else float(hrs)
 
