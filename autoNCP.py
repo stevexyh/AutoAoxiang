@@ -147,10 +147,14 @@ if __name__ == "__main__":
         hrs = 1 if hrs == '' else float(hrs)
 
     while True:
-        submitForm(
-            user=username,
-            passwd=password,
-            loc_code=location_code,
-            loc_name=location_name
-        )
-        sleep(hrs * 3600)
+        try:
+            submitForm(
+                user=username,
+                passwd=password,
+                loc_code=location_code,
+                loc_name=location_name
+            )
+            sleep(hrs * 3600)
+        except Exception as err:
+            fs.log_line({'提交异常':str(err)})
+            sleep(10)
