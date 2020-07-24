@@ -8,26 +8,6 @@ from . import formatString
 from .getInfo import remove_cache
 
 
-def getToken(url):
-    '''
-    获取网页token
-
-    #### Returns::
-        token, session
-    '''
-
-    session = requests.Session()
-    res = session.get(url).text
-    token = BeautifulSoup(res, 'html.parser').find(
-        name='input',
-        attrs={
-            'name': 'lt'
-        }
-    ).get('value')
-
-    return token, session
-
-
 def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
     '''
     使用POST方法登录
@@ -44,7 +24,8 @@ def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
         status = -1: 密码错误
     '''
 
-    token, session = getToken(urlLogin)
+    session = requests.Session()
+    session.get(urlLogin)
 
     # 登录页请求头
     header = {
@@ -57,17 +38,18 @@ def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
     loginData = {
         'username': user,
         'password': passwd,
-        'lt': token,
+        'currentMenu': 1,
+        'execution': 'e1s1',
         '_eventId': 'submit',
     }
 
     res = session.post(url=urlLogin, data=loginData, headers=header).text
 
-    if res.find('登录成功') != -1:
+    if res.find('Log In Successful') != -1:
         print(formatString.setColor(string='登录成功√', color='greenFore'))
         status = 1
     else:
-        if res.find('密码错误') != -1:
+        if res.find('Invalid credentials.') != -1:
             print(formatString.setColor(string='密码错误, 请重试', color='redBack'))
             status = -1
         else:
