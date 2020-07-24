@@ -12,7 +12,7 @@ try:
     from functions.loginAoxiang import login_check
     from functions.getInfo import get_info
 except ModuleNotFoundError:
-    error_info = '缺少函数库, 运行 pip install -r packages.txt 命令后重试'
+    error_info = '缺少函数库, 运行 pip install -r requirements.txt 命令后重试'
     print(error_info)
     exit(-1)
 

@@ -13,20 +13,30 @@
 - 目前可实现自动提交每日疫情报告, 其他功能陆续开发中
 
 ### 文件结构
+
 ```
 AutoAoxiang
 ├── README.md
+├── _config.yml
 ├── autoNCP.py
+├── build_version
+│   ├── autoNCP_mac_v1.0
+│   └── autoNCP_win_v1.0.exe
 ├── functions
+│   ├── __init__.py
 │   ├── formatString.py
+│   ├── getInfo.py
+│   ├── location.py
 │   └── loginAoxiang.py
-└── packages.txt
+└── requirements.txt
 ```
+
 ---
+
 ### 使用方法
 ### 1. `autoNCP.py` 自动提交疫情报告 
 - 直接运行 `autoNCP.py`
-- 如果缺少包, 运行 `pip install -r packages.txt`
+- 如果缺少包, 运行 `pip install -r requirements.txt`
 - 目前版本运行时不可关闭窗口, 否则程序终止  
 
 
