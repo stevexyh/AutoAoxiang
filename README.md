@@ -3,7 +3,7 @@
 ## ⚠️警告: 仅可在确保自身情况正常、信息属实的情况下可使用此脚本, 一切后果由使用者自己承担, 作者概不负责。
 ## ⚠️警告: 若使用者健康情况异常, 务必立即停止使用此自动化脚本。
 
-### `2020.2.21 by Steve X`
+### `2020.2.21`
 ### `V1.2`
 ### - ⚠️修复了提交位置乱码的严重错误, 请所有人更新。
 
@@ -46,20 +46,37 @@ AutoAoxiang
 
 ---
 ### `CHANGELOG`
-`2020.2.21 by Steve X`
+`2020.2.21`
 `V1.2`
 - 增加了缓存学号密码地点功能
 - 此网页post不需要给汉字编码，修复了提交位置乱码的严重错误
 
-`2020.2.17 by Steve X`
+`2020.2.17`
 `V1.1`
 - 增加定时自动运行功能
 - 增加log功能
 
-`2020.2.16 by Steve X`
+`2020.2.16`
 `V1.0`
 - 添加了颜色显示效果
 
 ---
-`Developed by Steve X`
+## LICENSE
+```
+           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                   Version 2, December 2004
+
+Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+Everyone is permitted to copy and distribute verbatim or modified
+copies of this license document, and changing it is allowed as long
+as the name is changed.
+
+           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+  TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+ 0. You just DO WHAT THE FUCK YOU WANT TO.
+```
+
+---
 [GitHub](https://github.com/Steve-Xyh/AutoAoxiang)
