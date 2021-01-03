@@ -49,12 +49,14 @@ def log(dic):
 
 def reserve(username, password, room: str = '711', i: int = 0):
     time = lib_room.get_room_time(i)
+    room = lib_room.get_room(room)
     conn = login_check(username, password)
+    now = datetime.datetime.now()
+    now_time = int(now.strftime('%H%M'))
+    reserve_date = (now+datetime.timedelta(days=2, minutes=10)).strftime('%Y-%m-%d')
     urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx'
-    # urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx?dialogid=&dev_id=857229&lab_id=857069&kind_id=959784&room_id=&type=dev&prop=&test_id=&term=&number=&classkind=&test_name=curltest&min_user=2&max_user=8&mb_list=2017302341%2C2017302342&start=2021-01-05+08%3A30&end=2021-01-05+09%3A29&start_time=830&end_time=929&up_file=&memo=&act=set_resv&_=1609667128663'
 
     header = {
-        # 'Origin': 'https://uis.nwpu.edu.cn',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -73,7 +75,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
         'dialogid': '',
 
         # 房间号
-        'dev_id': '857229',
+        'dev_id': room['dev_id'],
         'lab_id': '857069',
         'kind_id': '959784',
         'room_id': '',
@@ -85,16 +87,16 @@ def reserve(username, password, room: str = '711', i: int = 0):
         'classkind': '',
 
         # 房间主题
-        'test_name': 'fakehhhhhh',
+        'test_name': f'学{i+1}',
         'min_user': '2',
         'max_user': '8',
 
         # 学号
-        'mb_list': '2017302342,2017302341',
+        'mb_list': ','.join(user_id),
 
         # 时间
-        'start': '2021-01-05 08:30',
-        'end': '2021-01-05 09:29',
+        'start': f"{reserve_date} {time['start'][:2]}:{time['start'][-2:]}",
+        'end': f"{reserve_date} {time['end'][:2]}:{time['end'][-2:]}",
         'start_time': time['start'],
         'end_time': time['end'],
         'up_file': '',
@@ -103,30 +105,30 @@ def reserve(username, password, room: str = '711', i: int = 0):
         '_': '1609667128663',
     }
 
-    res = conn.post(
-        url=urlReserve,
-        data=dataReserve,
-        headers=header,
-    )
+    while True:
+        if 2358 <= now_time or now_time <= 15:
+            res = conn.post(
+                url=urlReserve,
+                data=dataReserve,
+                headers=header,
+            )
 
-    response = {
-        'user': username,
-        'room': room,
-        'time': f"{dataReserve['start_time']}-{dataReserve['end_time']}",
-        'msg': json.loads(res.text)['msg'],
-    }
+            response = {
+                'user': username,
+                'room': room['name'] + f"[{dataReserve['test_name']}]",
+                'time': f"{dataReserve['start_time']}-{dataReserve['end_time']}",
+                'msg': json.loads(res.text)['msg'],
+            }
 
-    status = '成功' in response['msg']
-    log(response) if status else None
+            status = '成功' in response['msg']
+            if status:
+                log(response)
 
-    return conn
+            sleep(0.5)
 
 
-def init_users():
-    with open('./.user_passwd', 'r') as pswd:
-        pswd = pswd.readlines()
-        user = [{'userid': line.split(',')[0].strip(), 'passwd':line.split(',')[1].strip()} for line in pswd]
-    return [threading.Thread(target=reserve, args=[user[i]['userid'], user[i]['passwd'], '711', i]) for i in range(3)]
+def init_users(user: dict):
+    return [threading.Thread(target=reserve, args=[user[i]['userid'], user[i]['passwd'], '710', i]) for i in range(3)]
 
 
 def start_user(user_list):
@@ -148,10 +150,10 @@ def start_user(user_list):
 
 
 if __name__ == '__main__':
-    users = init_users()
-    start_user(users)
+    with open('./.user_passwd', 'r') as pswd:
+        pswd = pswd.readlines()
+        user = [{'userid': line.split(',')[0].strip(), 'passwd':line.split(',')[1].strip()} for line in pswd]
+        user_id = [u['userid'] for u in user]
 
-    # name = str(input('学号:'))
-    # passwd = str(getpass.getpass('密码:'))
-
-    # reserve(name, passwd)
+    users_init = init_users(user)
+    start_user(users_init)
