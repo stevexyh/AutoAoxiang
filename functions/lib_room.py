@@ -12,8 +12,8 @@
 * GitHub       : https://github.com/Steve-Xyh/AutoAoxiang
 ----------------------------------------------------------------------------------------------------
 * Notice
-- 
-- 
+-
+-
 ----------------------------------------------------------------------------------------------------
 '''
 
@@ -127,8 +127,41 @@ room_4 = {
     },
     'rand_start': 712,
     'rand_end': 724,
-
 }
+
+
+room_time = [
+    {
+        'start': '1030',
+        'end': '1330',
+        'name': '上午',
+    },
+    {
+        'start': '1359',
+        'end': '1659',
+        'name': '下午',
+    },
+    {
+        'start': '1820',
+        'end': '2120',
+        'name': '晚上',
+    },
+]
+
+
+def get_room_time(i):
+    '''
+    Parameters::
+        i - thread id
+    Returns::
+        {
+            'start',
+            'end',
+            'name',
+        }
+    '''
+
+    return room_time[i]
 
 
 def get_room(room: str = '705', num: int = 2, rand_room: bool = False) -> str:

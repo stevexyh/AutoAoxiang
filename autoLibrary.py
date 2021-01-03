@@ -47,7 +47,8 @@ def log(dic):
     print(res)
 
 
-def reserve(username, password, room: str = '711'):
+def reserve(username, password, room: str = '711', i: int = 0):
+    time = lib_room.get_room_time(i)
     conn = login_check(username, password)
     urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx'
     # urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx?dialogid=&dev_id=857229&lab_id=857069&kind_id=959784&room_id=&type=dev&prop=&test_id=&term=&number=&classkind=&test_name=curltest&min_user=2&max_user=8&mb_list=2017302341%2C2017302342&start=2021-01-05+08%3A30&end=2021-01-05+09%3A29&start_time=830&end_time=929&up_file=&memo=&act=set_resv&_=1609667128663'
@@ -94,8 +95,8 @@ def reserve(username, password, room: str = '711'):
         # 时间
         'start': '2021-01-05 08:30',
         'end': '2021-01-05 09:29',
-        'start_time': '0830',
-        'end_time': '0929',
+        'start_time': time['start'],
+        'end_time': time['end'],
         'up_file': '',
         'memo': '',
         'act': 'set_resv',
@@ -114,10 +115,10 @@ def reserve(username, password, room: str = '711'):
         'time': f"{dataReserve['start_time']}-{dataReserve['end_time']}",
         'msg': json.loads(res.text)['msg'],
     }
-    # print(res.url)
-    # print(res)
-    # print(res.text)
-    log(response)
+
+    status = '成功' in response['msg']
+    log(response) if status else None
+
     return conn
 
 
@@ -125,8 +126,7 @@ def init_users():
     with open('./.user_passwd', 'r') as pswd:
         pswd = pswd.readlines()
         user = [{'userid': line.split(',')[0].strip(), 'passwd':line.split(',')[1].strip()} for line in pswd]
-        print(user)
-    return [threading.Thread(target=reserve, args=[user[i]['userid'], user[i]['passwd']]) for i in range(3)]
+    return [threading.Thread(target=reserve, args=[user[i]['userid'], user[i]['passwd'], '711', i]) for i in range(3)]
 
 
 def start_user(user_list):
@@ -144,6 +144,7 @@ def start_user(user_list):
             i.join()
         except (AttributeError, RuntimeError):
             pass
+    print('-'*30)
 
 
 if __name__ == '__main__':
