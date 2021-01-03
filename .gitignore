@@ -6,3 +6,4 @@
 build_version/
 .cache_info
 nohup.out
+.user_passwd
