@@ -17,12 +17,15 @@
 ----------------------------------------------------------------------------------------------------
 '''
 
-import getpass
 try:
     import sys
+    import json
     import datetime
+    import getpass
+    import threading
     # import schedule
     import functions.formatString as fs
+    import functions.lib_room as lib_room
     from time import sleep
     from functions.loginAoxiang import login_check
     # from functions.getInfo import get_info
@@ -32,7 +35,19 @@ except ModuleNotFoundError:
     exit(-1)
 
 
-def reserve(username, password):
+def log(dic):
+    """
+    :param dic: log dict(e.g. {name: value})
+    """
+    res = datetime.datetime.now().strftime('[\033[0;32;1m%y-%m-%d %H:%M:%S\033[0m]') + ' '
+    for key in dic:
+        flg = dic[key] is not None
+        res += format(key, ' <5')
+        res += format('\033[0;33;1m' + dic[key] + '\033[0m' if flg else '', ' <30')
+    print(res)
+
+
+def reserve(username, password, room: str = '711'):
     conn = login_check(username, password)
     urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx'
     # urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx?dialogid=&dev_id=857229&lab_id=857069&kind_id=959784&room_id=&type=dev&prop=&test_id=&term=&number=&classkind=&test_name=curltest&min_user=2&max_user=8&mb_list=2017302341%2C2017302342&start=2021-01-05+08%3A30&end=2021-01-05+09%3A29&start_time=830&end_time=929&up_file=&memo=&act=set_resv&_=1609667128663'
@@ -84,6 +99,7 @@ def reserve(username, password):
         'up_file': '',
         'memo': '',
         'act': 'set_resv',
+        '_': '1609667128663',
     }
 
     res = conn.post(
@@ -91,14 +107,50 @@ def reserve(username, password):
         data=dataReserve,
         headers=header,
     )
-    print(res.url)
-    print(res)
-    print(res.text)
+
+    response = {
+        'user': username,
+        'room': room,
+        'time': f"{dataReserve['start_time']}-{dataReserve['end_time']}",
+        'msg': json.loads(res.text)['msg'],
+    }
+    # print(res.url)
+    # print(res)
+    # print(res.text)
+    log(response)
     return conn
 
 
-if __name__ == '__main__':
-    name = str(input('学号:'))
-    passwd = str(getpass.getpass('密码:'))
+def init_users():
+    with open('./.user_passwd', 'r') as pswd:
+        pswd = pswd.readlines()
+        user = [{'userid': line.split(',')[0].strip(), 'passwd':line.split(',')[1].strip()} for line in pswd]
+        print(user)
+    return [threading.Thread(target=reserve, args=[user[i]['userid'], user[i]['passwd']]) for i in range(3)]
 
-    reserve(name, passwd)
+
+def start_user(user_list):
+    """
+    start all users in user_list and join them
+    """
+
+    for i in user_list:
+        try:
+            i.start()
+        except AttributeError:
+            pass
+    for i in user_list:
+        try:
+            i.join()
+        except (AttributeError, RuntimeError):
+            pass
+
+
+if __name__ == '__main__':
+    users = init_users()
+    start_user(users)
+
+    # name = str(input('学号:'))
+    # passwd = str(getpass.getpass('密码:'))
+
+    # reserve(name, passwd)
