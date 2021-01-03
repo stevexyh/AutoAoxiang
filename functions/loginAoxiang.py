@@ -46,15 +46,18 @@ def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
     res = session.post(url=urlLogin, data=loginData, headers=header).text
 
     if res.find('Log In Successful') != -1:
-        print(formatString.setColor(string='登录成功√', color='greenFore'))
+        print(f'用户:{user}'+formatString.setColor(string='登录成功√', color='greenFore'))
         status = 1
     else:
         if res.find('Invalid credentials.') != -1:
-            print(formatString.setColor(string='密码错误, 请重试', color='redBack'))
+            print(f'用户:{user}'+formatString.setColor(string='密码错误, 请重试', color='redBack'))
             status = -1
         else:
-            print(formatString.setColor(
-                string='密码正确, 登录失败, 准备重新登录...', color='redBack'))
+            print(
+                f'用户:{user}' +
+                formatString.setColor(
+                    string='密码正确, 登录失败, 准备重新登录...', color='redBack'
+                ))
             status = 0
 
     return session, status
