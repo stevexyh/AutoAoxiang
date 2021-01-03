@@ -17,6 +17,8 @@
 ----------------------------------------------------------------------------------------------------
 '''
 
+DEBUG = False
+
 try:
     import sys
     import json
@@ -106,7 +108,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
     }
 
     while True:
-        if 2358 <= now_time or now_time <= 15:
+        if 2358 <= now_time or now_time <= 15 or DEBUG:
             res = conn.post(
                 url=urlReserve,
                 data=dataReserve,
@@ -121,7 +123,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
             }
 
             status = '成功' in response['msg']
-            if status:
+            if status or DEBUG:
                 log(response)
 
             sleep(0.5)
