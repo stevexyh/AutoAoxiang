@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+'''
+----------------------------------------------------------------------------------------------------
+* Project Name : AutoAoxiang
+* File Name    : autoLibrary.py
+* Description  : Reserve library room automatically.
+* Create Time  : 2021-01-03 18:39:37
+* Version      : 1.0
+* Author       : Steve X
+* GitHub       : https://github.com/Steve-Xyh/AutoAoxiang
+----------------------------------------------------------------------------------------------------
+* Notice
+- 
+- 
+----------------------------------------------------------------------------------------------------
+'''
+
 import getpass
 try:
     import sys
