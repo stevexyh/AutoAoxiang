@@ -161,7 +161,7 @@ def get_room_time(i):
         }
     '''
 
-    return room_time[i]
+    return room_time[i % len(room_time)]
 
 
 def get_room(room: str = '705', num: int = 4, rand_room: bool = False) -> str:
