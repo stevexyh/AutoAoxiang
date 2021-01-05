@@ -18,6 +18,7 @@
 '''
 
 DEBUG = False
+#DEBUG = True
 
 try:
     import sys
