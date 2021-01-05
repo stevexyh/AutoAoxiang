@@ -17,8 +17,6 @@
 ----------------------------------------------------------------------------------------------------
 '''
 
-# DEBUG = True
-DEBUG = False
 
 try:
     import sys
@@ -62,8 +60,8 @@ def reserve(username, password, room: str = '711', i: int = 0):
     conn, status = aoxiang.login(username, password, url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx')
     res = conn.get(url=url_reserve)
     session_id = conn.cookies.get_dict().get('ASP.NET_SessionId')
-    print(res.text)
-    print('SSID:'+str(session_id))
+    print(res.text if res.status_code == 200 else res)
+    print('SSID:'+str(session_id)+'\n')
 
     header = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -132,7 +130,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
             if status or DEBUG:
                 log(response)
 
-            if not res.ok():
+            if not res.ok:
                 print('FAILED')
                 sleep(1800)
 
@@ -167,8 +165,9 @@ if __name__ == '__main__':
         user = [{'userid': line.split(',')[0].strip(), 'passwd':line.split(',')[1].strip()} for line in pswd]
         user_id = [u['userid'] for u in user]
 
-    parser = argh.ArghParser(description='Library Reservation')
-    parser.dispatch()
+    # parser = argh.ArghParser(description='Library Reservation')
+    # parser.dispatch()
+    DEBUG = sys.argv[-1] == '--debug'
 
     users_init = init_users(user)
     start_user(users_init)
