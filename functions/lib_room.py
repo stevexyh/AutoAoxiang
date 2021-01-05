@@ -164,7 +164,7 @@ def get_room_time(i):
     return room_time[i]
 
 
-def get_room(room: str = '705', num: int = 2, rand_room: bool = False) -> str:
+def get_room(room: str = '705', num: int = 4, rand_room: bool = False) -> str:
     '''
     descriptions
 

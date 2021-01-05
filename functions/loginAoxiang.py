@@ -8,7 +8,7 @@ from . import formatString
 from .getInfo import remove_cache
 
 
-def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
+def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login'):
     '''
     使用POST方法登录
 
@@ -25,12 +25,12 @@ def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
     '''
 
     session = requests.Session()
-    session.get(urlLogin)
+    session.get(url_login)
 
     # 登录页请求头
     header = {
         'Origin': 'https://uis.nwpu.edu.cn',
-        'Referer': urlLogin,
+        'Referer': url_login,
         'Content-Type': 'application/x-www-form-urlencoded',
     }
 
@@ -43,7 +43,7 @@ def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
         '_eventId': 'submit',
     }
 
-    res = session.post(url=urlLogin, data=loginData, headers=header).text
+    res = session.post(url=url_login, data=loginData, headers=header).text
 
     if res.find('Log In Successful') != -1:
         print(f'用户:{user}'+formatString.setColor(string='登录成功√', color='greenFore'))
@@ -63,12 +63,12 @@ def login(user='', passwd='', urlLogin='https://uis.nwpu.edu.cn/cas/login'):
     return session, status
 
 
-def login_check(user='', passwd=''):
+def login_check(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login'):
     '''
     检查登录状态, 若登录失败则反复尝试
     '''
 
-    session, status = login(user=user, passwd=passwd)
+    session, status = login(user=user, passwd=passwd, url_login=url_login)
     while True:
         if status == 1:
             return session
@@ -78,7 +78,7 @@ def login_check(user='', passwd=''):
                 exit(-1)
             else:
                 print('正在重新登录...')
-                session, status = login(user=user, passwd=passwd)
+                session, status = login(user=user, passwd=passwd,url_login=url_login)
 
     return session
 

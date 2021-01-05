@@ -17,6 +17,7 @@
 ----------------------------------------------------------------------------------------------------
 '''
 
+# DEBUG = True
 DEBUG = False
 #DEBUG = True
 
@@ -26,11 +27,12 @@ try:
     import datetime
     import getpass
     import threading
+    import argh
     # import schedule
     import functions.formatString as fs
     import functions.lib_room as lib_room
+    import functions.loginAoxiang as aoxiang
     from time import sleep
-    from functions.loginAoxiang import login_check
     # from functions.getInfo import get_info
 except ModuleNotFoundError:
     error_info = '缺少函数库, 运行 pip install -r requirements.txt 命令后重试'
@@ -53,11 +55,16 @@ def log(dic):
 def reserve(username, password, room: str = '711', i: int = 0):
     time = lib_room.get_room_time(i)
     room = lib_room.get_room(room)
-    conn = login_check(username, password)
     now = datetime.datetime.now()
     now_time = int(now.strftime('%H%M'))
     reserve_date = (now+datetime.timedelta(days=2, minutes=10)).strftime('%Y-%m-%d')
-    urlReserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx'
+    url_reserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx'
+
+    conn, status = aoxiang.login(username, password, url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx')
+    res = conn.get(url=url_reserve)
+    session_id = conn.cookies.get_dict().get('ASP.NET_SessionId')
+    print(res.text)
+    print('SSID:'+str(session_id))
 
     header = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -65,7 +72,8 @@ def reserve(username, password, room: str = '711', i: int = 0):
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-        'Cookie': 'ASP.NET_SessionId=lj3jbjbsktusf0t1fpzpy4yo',
+        # 'Cookie': 'ASP.NET_SessionId=uiwirsdqtscke3qhdpmgnkwy',
+        'Cookie': 'ASP.NET_SessionId='+str(session_id),
         'Host': '202.117.88.170',
         'Pragma': 'no-cache',
         'Upgrade-Insecure-Requests': '1',
@@ -74,7 +82,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
     }
 
-    dataReserve = {
+    data_reserve = {
         'dialogid': '',
 
         # 房间号
@@ -105,33 +113,32 @@ def reserve(username, password, room: str = '711', i: int = 0):
         'up_file': '',
         'memo': '',
         'act': 'set_resv',
-        '_': '1609667128663',
     }
 
     while True:
         if 2358 <= now_time or now_time <= 15 or DEBUG:
             res = conn.post(
-                url=urlReserve,
-                data=dataReserve,
+                url=url_reserve,
+                data=data_reserve,
                 headers=header,
             )
 
             response = {
-                'user': username,
-                'room': room['name'] + f"[{dataReserve['test_name']}]",
-                'time': f"{dataReserve['start_time']}-{dataReserve['end_time']}",
-                'msg': json.loads(res.text)['msg'],
+                f'{username}: ': room['name'] + f"[{data_reserve['test_name']}]",
+                # 'date': reserve_date,
+                reserve_date: f"({data_reserve['start_time']}-{data_reserve['end_time']})",
+                'msg': json.loads(res.text)['msg'] if res.ok else 'FAILED',
             }
 
             status = '成功' in response['msg']
             if status or DEBUG:
                 log(response)
 
-            sleep(0.5)
+            sleep(2)
 
 
 def init_users(user: dict):
-    return [threading.Thread(target=reserve, args=[user[i]['userid'], user[i]['passwd'], '710', i]) for i in range(3)]
+    return [threading.Thread(target=reserve, args=[u['userid'], u['passwd'], '717', i]) for i, u in enumerate(user)]
 
 
 def start_user(user_list):
@@ -157,6 +164,9 @@ if __name__ == '__main__':
         pswd = pswd.readlines()
         user = [{'userid': line.split(',')[0].strip(), 'passwd':line.split(',')[1].strip()} for line in pswd]
         user_id = [u['userid'] for u in user]
+
+    parser = argh.ArghParser(description='Library Reservation')
+    parser.dispatch()
 
     users_init = init_users(user)
     start_user(users_init)
