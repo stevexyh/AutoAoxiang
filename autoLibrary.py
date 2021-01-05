@@ -124,7 +124,6 @@ def reserve(username, password, room: str = '711', i: int = 0):
 
             response = {
                 f'{username}: ': room['name'] + f"[{data_reserve['test_name']}]",
-                # 'date': reserve_date,
                 reserve_date: f"({data_reserve['start_time']}-{data_reserve['end_time']})",
                 'msg': json.loads(res.text)['msg'] if res.ok else 'FAILED',
             }
@@ -132,6 +131,10 @@ def reserve(username, password, room: str = '711', i: int = 0):
             status = '成功' in response['msg']
             if status or DEBUG:
                 log(response)
+
+            if not res.ok():
+                print('FAILED')
+                sleep(1800)
 
             sleep(2)
 
