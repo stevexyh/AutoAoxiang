@@ -8,14 +8,15 @@ from . import formatString
 from .getInfo import remove_cache
 
 
-def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login'):
+def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login', keyword='Log In Successful'):
     '''
     使用POST方法登录
 
     #### Parameters::
         user - 用户名
         passwd - 密码
-        urlLogin - 登录链接
+        url_login - 登录链接
+        keyword - 登录成功显示的标志关键字
 
     #### Returns::
         返回session, 登录状态status
@@ -45,7 +46,7 @@ def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login'):
 
     res = session.post(url=url_login, data=loginData, headers=header).text
 
-    if res.find('Log In Successful') != -1:
+    if res.find(keyword) != -1:
         print(f'用户:{user}'+formatString.setColor(string='登录成功√', color='greenFore'))
         status = 1
     else:
@@ -78,7 +79,7 @@ def login_check(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login
                 exit(-1)
             else:
                 print('正在重新登录...')
-                session, status = login(user=user, passwd=passwd,url_login=url_login)
+                session, status = login(user=user, passwd=passwd, url_login=url_login)
 
     return session
 

@@ -57,7 +57,8 @@ def reserve(username, password, room: str = '711', i: int = 0):
     conn, status = aoxiang.login(
         user=username,
         passwd=password,
-        url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx'
+        url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx',
+        keyword='欢迎',
     )
 
     while True:
@@ -65,15 +66,12 @@ def reserve(username, password, room: str = '711', i: int = 0):
         now_time = int(now.strftime('%H%M'))
         reserve_date = (now+datetime.timedelta(days=2, minutes=10)).strftime('%Y-%m-%d')
 
-        if 2359 <= now_time or now_time <= 15:  # or DEBUG:
+        if 2355 <= now_time or now_time <= 15:  # or DEBUG:
             try:
-                pass
-
                 res = conn.get(url=url_reserve)
                 session_id = conn.cookies.get_dict().get('ASP.NET_SessionId')
                 if res.status_code != 200:
                     print(res)
-                    print(res.text)
                     print('SSID:'+str(session_id)+'\n')
 
                     conn, status = aoxiang.login(
@@ -120,7 +118,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
                     'max_user': '8',
 
                     # 学号
-                    'mb_list': ','.join(user_id),
+                    'mb_list': members,
 
                     # 时间
                     'start': f"{reserve_date} {time['start'][:2]}:{time['start'][-2:]}",
@@ -150,12 +148,12 @@ def reserve(username, password, room: str = '711', i: int = 0):
 
                 if not res.ok:
                     print('FAILED')
-                    sleep(1800)
 
                 sleep(2)
 
             except ConnectionError as err:
                 print(err)
+                sleep(10)
 
 
 def init_users(user: dict):
@@ -188,7 +186,9 @@ if __name__ == '__main__':
 
     # parser = argh.ArghParser(description='Library Reservation')
     # parser.dispatch()
-    DEBUG = sys.argv[-1] == '--debug'
+    DEBUG = '--debug' in sys.argv
+    members = sys.argv[1]
+    print(members)
 
     users_init = init_users(user)
     start_user(users_init)
