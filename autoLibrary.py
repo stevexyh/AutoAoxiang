@@ -52,89 +52,108 @@ def log(dic):
 def reserve(username, password, room: str = '711', i: int = 0):
     time = lib_room.get_room_time(i)
     room = lib_room.get_room(room)
-    now = datetime.datetime.now()
-    now_time = int(now.strftime('%H%M'))
-    reserve_date = (now+datetime.timedelta(days=2, minutes=10)).strftime('%Y-%m-%d')
     url_reserve = 'http://202.117.88.170/ClientWeb/pro/ajax/reserve.aspx'
 
-    conn, status = aoxiang.login(username, password, url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx')
-    res = conn.get(url=url_reserve)
-    session_id = conn.cookies.get_dict().get('ASP.NET_SessionId')
-    print(res.text if res.status_code == 200 else res)
-    print('SSID:'+str(session_id)+'\n')
-
-    header = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        # 'Cookie': 'ASP.NET_SessionId=uiwirsdqtscke3qhdpmgnkwy',
-        'Cookie': 'ASP.NET_SessionId='+str(session_id),
-        'Host': '202.117.88.170',
-        'Pragma': 'no-cache',
-        'Upgrade-Insecure-Requests': '1',
-        'Referer': 'http://202.117.88.170/ClientWeb/xcus/ic2/Default.aspx',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
-    }
-
-    data_reserve = {
-        'dialogid': '',
-
-        # 房间号
-        'dev_id': room['dev_id'],
-        'lab_id': '857069',
-        'kind_id': '959784',
-        'room_id': '',
-        'type': 'dev',
-        'prop': '',
-        'test_id': '',
-        'term': '',
-        'number': '',
-        'classkind': '',
-
-        # 房间主题
-        'test_name': f'学{i+1}',
-        'min_user': '2',
-        'max_user': '8',
-
-        # 学号
-        'mb_list': ','.join(user_id),
-
-        # 时间
-        'start': f"{reserve_date} {time['start'][:2]}:{time['start'][-2:]}",
-        'end': f"{reserve_date} {time['end'][:2]}:{time['end'][-2:]}",
-        'start_time': time['start'],
-        'end_time': time['end'],
-        'up_file': '',
-        'memo': '',
-        'act': 'set_resv',
-    }
+    conn, status = aoxiang.login(
+        user=username,
+        passwd=password,
+        url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx',
+        keyword='欢迎',
+    )
 
     while True:
-        if 2358 <= now_time or now_time <= 15 or DEBUG:
-            res = conn.post(
-                url=url_reserve,
-                data=data_reserve,
-                headers=header,
-            )
+        now = datetime.datetime.now()
+        now_time = int(now.strftime('%H%M'))
+        reserve_date = (now+datetime.timedelta(days=2, minutes=10)).strftime('%Y-%m-%d')
 
-            response = {
-                f'{username}: ': room['name'] + f"[{data_reserve['test_name']}]",
-                reserve_date: f"({data_reserve['start_time']}-{data_reserve['end_time']})",
-                'msg': json.loads(res.text)['msg'] if res.ok else 'FAILED',
-            }
+        if 2355 <= now_time or now_time <= 15:  # or DEBUG:
+            try:
+                res = conn.get(url=url_reserve)
+                session_id = conn.cookies.get_dict().get('ASP.NET_SessionId')
+                if res.status_code != 200:
+                    print(res)
+                    print('SSID:'+str(session_id)+'\n')
 
-            status = '成功' in response['msg']
-            if status or DEBUG:
-                log(response)
+                    conn, status = aoxiang.login(
+                        user=username,
+                        passwd=password,
+                        url_login='https://uis.nwpu.edu.cn/cas/login?service=http://202.117.88.170/loginall.aspx'
+                    )
+                    print('RETRIED...')
 
-            if not res.ok:
-                print('FAILED')
-                sleep(1800)
+                header = {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept-Language': 'zh-CN,zh;q=0.9',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                    # 'Cookie': 'ASP.NET_SessionId=uiwirsdqtscke3qhdpmgnkwy',
+                    'Cookie': 'ASP.NET_SessionId='+str(session_id),
+                    'Host': '202.117.88.170',
+                    'Pragma': 'no-cache',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Referer': 'http://202.117.88.170/ClientWeb/xcus/ic2/Default.aspx',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+                }
 
-            sleep(2)
+                data_reserve = {
+                    'dialogid': '',
+
+                    # 房间号
+                    'dev_id': room['dev_id'],
+                    'lab_id': '857069',
+                    'kind_id': '959784',
+                    'room_id': '',
+                    'type': 'dev',
+                    'prop': '',
+                    'test_id': '',
+                    'term': '',
+                    'number': '',
+                    'classkind': '',
+
+                    # 房间主题
+                    'test_name': f'学{i+1}',
+                    'min_user': '2',
+                    'max_user': '8',
+
+                    # 学号
+                    'mb_list': members,
+
+                    # 时间
+                    'start': f"{reserve_date} {time['start'][:2]}:{time['start'][-2:]}",
+                    'end': f"{reserve_date} {time['end'][:2]}:{time['end'][-2:]}",
+                    'start_time': time['start'],
+                    'end_time': time['end'],
+                    'up_file': '',
+                    'memo': '',
+                    'act': 'set_resv',
+                }
+
+                res = conn.post(
+                    url=url_reserve,
+                    data=data_reserve,
+                    headers=header,
+                )
+
+                response = {
+                    f'{username}: ': room['name'] + f"[{data_reserve['test_name']}]",
+                    reserve_date: f"({data_reserve['start_time']}-{data_reserve['end_time']})",
+                    'msg': json.loads(res.text)['msg'] if res.ok else 'FAILED',
+                }
+
+                status = '成功' in response['msg']
+                if status or DEBUG:
+                    log(response)
+
+                if not res.ok:
+                    print('FAILED')
+
+                sleep(2)
+
+            except ConnectionError as err:
+                print(err)
+                sleep(10)
 
 
 def init_users(user: dict):
@@ -167,7 +186,9 @@ if __name__ == '__main__':
 
     # parser = argh.ArghParser(description='Library Reservation')
     # parser.dispatch()
-    DEBUG = sys.argv[-1] == '--debug'
+    DEBUG = '--debug' in sys.argv
+    members = sys.argv[1]
+    print(members)
 
     users_init = init_users(user)
     start_user(users_init)
