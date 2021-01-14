@@ -20,10 +20,8 @@ def get_info(is_input=True):
         user_name = input("学号:__________\b\b\b\b\b\b\b\b\b\b")
         password = getpass.getpass('密码:')
         # location = input("地点:__________\b\b\b\b\b\b\b\b\b\b")
-        while True:
-            is_school = input("是否在学校(是1/否0):_\b")
-            if is_school in ('1', '0'):
-                break
+
+        is_school = bool(input("是否在学校(是1/否0):_\b"))
         if is_school:
             location_code = '1'
             location_name = '在学校'
