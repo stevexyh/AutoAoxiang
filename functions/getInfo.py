@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import getpass
 import os
 import sys
@@ -20,7 +23,6 @@ def get_info(is_input=True):
     if is_input:
         user_name = input("学号:__________\b\b\b\b\b\b\b\b\b\b")
         password = getpass.getpass('密码:')
-        # location = input("地点:__________\b\b\b\b\b\b\b\b\b\b")
 
         is_school = bool(int(input("是否在学校(是1/否0):_\b")))
         if is_school:

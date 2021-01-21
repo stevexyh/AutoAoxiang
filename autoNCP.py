@@ -90,11 +90,11 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
     }
 
     print('准备获取表单...')
-    session.get(urlForm)
+    session.get(urlForm, timeout=5)
 
     print('已获取表单, 准备提交...')
-    session.post(url=urlSubmit, data=formData, headers=formHeaders)
-    res = session.get(urlForm).text
+    session.post(url=urlSubmit, data=formData, headers=formHeaders, timeout=5)
+    res = session.get(urlForm, timeout=5).text
     session.close()
 
     # 成功信息, 此处为原网页设置, 不可随意更改
@@ -126,21 +126,25 @@ if __name__ == "__main__":
     if 'server' in sys.argv:
         print('`server` arg is no longer available, use crontab in your OS instead.')
 
-    try:
-        submitForm(
-            user=username,
-            passwd=password,
-            loc_code=location_code,
-            loc_name=location_name
-        )
+    try_time = 3
+    while try_time > 0:
+        try:
+            submitForm(
+                user=username,
+                passwd=password,
+                loc_code=location_code,
+                loc_name=location_name
+            )
 
-        log_dic = {
-            location_name: 'SUCC'
-        }
+            with open(sys.path[0] + '/autoNCP.log', 'a') as log_file:
+                log_file.write(fs.log_line({location_name: 'SUCC'}, color=False)+'\n')
 
-        with open(sys.path[0] + '/autoNCP.log', 'a') as log_file:
-            log_file.write(fs.log_line(log_dic, color=False)+'\n')
+            break
 
-    except Exception as err:
-        print(fs.log_line({'提交异常': str(err)}))
-        sleep(10)
+        except Exception as err:
+            print(fs.log_line({'提交异常': str(err)}))
+            sleep(10)
+            try_time -= 1
+
+            with open(sys.path[0] + '/autoNCP.log', 'a') as log_file:
+                log_file.write(fs.log_line({'Err:': err}, color=False)+'\n')
