@@ -1,8 +1,9 @@
 import getpass
 import os
+import sys
 from .location import get_location_info
 
-cache_file = '.cache_info'
+cache_file = sys.path[0] + '/.cache_info'
 
 
 def get_info(is_input=True):
