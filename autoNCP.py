@@ -138,7 +138,7 @@ if __name__ == "__main__":
             location_name: 'SUCC'
         }
 
-        with open('./autoNCP.log', 'a') as log_file:
+        with open(sys.path[0] + '/autoNCP.log', 'a') as log_file:
             log_file.write(fs.log_line(log_dic, color=False)+'\n')
 
     except Exception as err:
