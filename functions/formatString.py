@@ -16,7 +16,7 @@ logData = {
 }
 
 
-def log_line(dic: dict):
+def log_line(dic: dict, color=True):
     '''
     中文单行log
 
@@ -24,12 +24,16 @@ def log_line(dic: dict):
         dic: log dict(e.g. {name: value})
     '''
 
+    time_info = setColor(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                         color='greenFore') if color else datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    res = '[' + time_info + '] '
+
     for key in dic:
         flg = dic[key] is not None
-        res = str(key).ljust(12, chr(12288))
-        res += (setColor(dic[key], color='yellowFore')
-                if flg else '').ljust(20, chr(12288)) + '\n'
-    print(res)
+        res += str(key).ljust(12, chr(12288))
+        val_info = setColor(dic[key], color='yellowFore') if color else dic[key]
+        res += val_info if flg else ''.ljust(20, chr(12288)) + '\n'
+    return res
 
 
 def log_cn(dic: dict):
@@ -48,7 +52,7 @@ def log_cn(dic: dict):
         res += (setColor(dic[key], color='yellowFore')
                 if flg else '').ljust(20, chr(12288)) + '\n'
     res += '-' * formLen
-    print(res)
+    return res
 
 
 def log_en(dic):
@@ -67,7 +71,7 @@ def log_en(dic):
         res += (setColor(dic[key], color='yellowFore')
                 if flg else '').ljust(20) + '\n'
     res += '-' * formLen
-    print(res)
+    return res
 
 
 def setColor(string, color):
@@ -90,4 +94,4 @@ if __name__ == "__main__":
     b = setColor(a, 'redFore')
     print(b)
 
-    log_cn(logData)
+    print(log_cn(logData))

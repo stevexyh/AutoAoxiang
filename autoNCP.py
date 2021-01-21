@@ -102,14 +102,8 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
     status = res.find('重新提交将覆盖上一次的信息')
 
     if status != -1:
-        fs.log_cn(logData)
+        print(fs.log_cn(logData))
         print(success)
-
-        global hrs
-        post_time = datetime.datetime.now()
-        next_post = post_time + datetime.timedelta(hours=hrs)
-        next_dict = {'下次提交时间:': next_post.strftime('%Y-%m-%d %H:%M:%S')}
-        fs.log_line(next_dict)
         print('-' * 100)
 
         return True
@@ -129,32 +123,24 @@ if __name__ == "__main__":
 
     username, password, location_code, location_name = get_info(is_input=False)
 
+    if 'server' in sys.argv:
+        print('`server` arg is no longer available, use crontab in your OS instead.')
+
     try:
-        if sys.argv[1] == 'server':
-            server = True
-        try:
-            hrs = float(sys.argv[2])
-        except:
-            print('请输入时间(小时)')
-            print('Usage: python3 autoNCP.py server 12')
-            exit(-1)
-    except IndexError:
-        server = False
+        submitForm(
+            user=username,
+            passwd=password,
+            loc_code=location_code,
+            loc_name=location_name
+        )
 
-    # 服务器端运行
-    if not server:
-        hrs = input('定时运行间隔时间(单位: 小时, 默认1):')
-        hrs = 1 if hrs == '' else float(hrs)
+        log_dic = {
+            location_name: 'SUCC'
+        }
 
-    while True:
-        try:
-            submitForm(
-                user=username,
-                passwd=password,
-                loc_code=location_code,
-                loc_name=location_name
-            )
-            sleep(hrs * 3600)
-        except Exception as err:
-            fs.log_line({'提交异常':str(err)})
-            sleep(10)
+        with open('./autoNCP.log', 'a') as log_file:
+            log_file.write(fs.log_line(log_dic, color=False)+'\n')
+
+    except Exception as err:
+        print(fs.log_line({'提交异常': str(err)}))
+        sleep(10)
