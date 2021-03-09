@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-* Project Name : AutoAoxiang
+* Project Name : AutoCSU
 * File Name    : location.py
 * Description  : 获取城市编码
 * Create Time  : 2020-04-07 18:18:15

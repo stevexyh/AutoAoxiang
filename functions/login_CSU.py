@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import re
 import requests
 import getpass
 from bs4 import BeautifulSoup
@@ -8,7 +9,7 @@ from . import formatString
 from .getInfo import remove_cache
 
 
-def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login', keyword='Log In Successful'):
+def login(user='', passwd='', url_login='http://ca.its.csu.edu.cn/home/login/215', err='用户登录-中南大学——统一身份认证'):
     '''
     使用POST方法登录
 
@@ -30,36 +31,27 @@ def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login', key
 
     # 登录页请求头
     header = {
-        'Origin': 'https://uis.nwpu.edu.cn',
+        'Host': 'ca.its.csu.edu.cn',
+        'Origin': 'http://ca.its.csu.edu.cn',
         'Referer': url_login,
         'Content-Type': 'application/x-www-form-urlencoded',
     }
 
     # 登录信息
     loginData = {
-        'username': user,
-        'password': passwd,
-        'currentMenu': 1,
-        'execution': 'e1s1',
-        '_eventId': 'submit',
+        'userName': user,
+        'passWord': passwd,
+        'enter': 'true',
     }
 
     res = session.post(url=url_login, data=loginData, headers=header).text
 
-    if res.find(keyword) != -1:
-        print(f'用户:{user}'+formatString.setColor(string='登录成功√', color='greenFore'))
+    if res.find(err) == -1:
+        print(f'用户:{user} '+formatString.setColor(string='登录成功√', color='greenFore'))
         status = 1
     else:
-        if res.find('Invalid credentials.') != -1:
-            print(f'用户:{user}'+formatString.setColor(string='密码错误, 请重试', color='redBack'))
-            status = -1
-        else:
-            print(
-                f'用户:{user}' +
-                formatString.setColor(
-                    string='密码正确, 登录失败, 准备重新登录...', color='redBack'
-                ))
-            status = 0
+        print(f'用户:{user} '+formatString.setColor(string='密码错误, 请重试', color='redBack'))
+        status = -1
 
     return session, status
 

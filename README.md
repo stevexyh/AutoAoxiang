@@ -1,5 +1,5 @@
 # 翱翔门户自动登录脚本
-## `AutoAoxiang`
+## `Auto_CSU`
 ## ⚠️警告: 仅可在确保自身情况正常、信息属实的情况下可使用此脚本, 一切后果由使用者自己承担, 作者概不负责。
 ## ⚠️警告: 若使用者健康情况异常, 务必立即停止使用此自动化脚本。
 
@@ -15,7 +15,7 @@
 ### 文件结构
 
 ```
-AutoAoxiang
+Auto_CSU
 ├── README.md
 ├── _config.yml
 ├── autoNCP.py
@@ -27,7 +27,7 @@ AutoAoxiang
 │   ├── formatString.py
 │   ├── getInfo.py
 │   ├── location.py
-│   └── loginAoxiang.py
+│   └── login_CSU.py
 └── requirements.txt
 ```
 
@@ -79,4 +79,4 @@ as the name is changed.
 ```
 
 ---
-[GitHub](https://github.com/Steve-Xyh/AutoAoxiang)
+[GitHub](https://github.com/Steve-Xyh/Auto_CSU)

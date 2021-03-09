@@ -3,13 +3,13 @@
 
 '''
 ----------------------------------------------------------------------------------------------------
-* Project Name : AutoAoxiang
+* Project Name : Auto_CSU
 * File Name    : room.py
 * Description  : Room info
 * Create Time  : 2021-01-03 18:39:27
 * Version      : 1.0
 * Author       : Steve X
-* GitHub       : https://github.com/Steve-Xyh/AutoAoxiang
+* GitHub       : https://github.com/Steve-Xyh/Auto_CSU
 ----------------------------------------------------------------------------------------------------
 * Notice
 -

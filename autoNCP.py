@@ -9,7 +9,7 @@ try:
     # import schedule
     import functions.formatString as fs
     from time import sleep
-    from functions.loginAoxiang import login_check
+    from functions.login_CSU import login_check
     from functions.getInfo import get_info
 except ModuleNotFoundError:
     error_info = '缺少函数库, 运行 pip install -r requirements.txt 命令后重试'
@@ -26,14 +26,28 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
     session = login_check(user=user, passwd=passwd)
 
     # 表格url与提交url不同, 否则提交失败
-    urlForm = 'http://yqtb.nwpu.edu.cn/wx/ry/jrsb.jsp'
-    urlSubmit = 'http://yqtb.nwpu.edu.cn/wx/ry/ry_util.jsp'
+    urlForm = 'https://wxxy.csu.edu.cn/ncov/wap/default/index'
+    urlSubmit = 'https://wxxy.csu.edu.cn/ncov/wap/default/index'
 
     # 表格请求头
     formHeaders = {
-        'Origin': 'http://yqtb.nwpu.edu.cn',
-        'Referer': 'http://yqtb.nwpu.edu.cn/wx/ry/jrsb.jsp',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Cookie': 'BIGipServerpool_wxxy.csu.edu.cn=2276632768.20480.0000; eai-sess=eu5hcrep5c5q6t06e6til4fb36; UUkey=6cf7b11425d0fe4488b80c915cbee594',
+        'Host': 'wxxy.csu.edu.cn',
+        'Pragma': 'no-cache',
+        'Referer': 'https://wxxy.csu.edu.cn/site/applicationSquare/index?sid=1',
+        'sec-ch-ua': '"Chromium";v="88", "Google Chrome";v="88", ";Not A Brand";v="99"',
+        'sec-ch-ua-mobile': '?0',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36',
     }
 
     # 填表信息
@@ -90,9 +104,14 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
     }
 
     print('准备获取表单...')
-    session.get(urlForm, timeout=5)
+    res = session.get(urlForm, headers=formHeaders, timeout=5).text
+    if res.find('健康打卡') != -1:
+        print('已获取表单, 准备提交...')
+    else:
+        print('获取表单失败')
 
-    print('已获取表单, 准备提交...')
+
+    # TODO(Steve X): REMOVE BEFORE FLIGHT
     session.post(url=urlSubmit, data=formData, headers=formHeaders, timeout=5)
     res = session.get(urlForm, timeout=5).text
     session.close()
