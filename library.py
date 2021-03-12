@@ -18,7 +18,9 @@
 '''
 
 
+import sys
 import requests
+import functions.formatString as fs
 
 
 headers = {
@@ -55,6 +57,10 @@ def run():
     session = requests.Session()
     res = session.post(url='http://yy.lib.neau.edu.cn/dgyy/',headers=headers, data=data).text
     status = '当前已经预约了' if '当前已经预约了' in res else '应该约上了'
+
+    with open(sys.path[0] + '/NEAU_library.log', 'a') as log_file:
+        log_file.write(fs.log_line({'status': status}, color=False)+'\n')
+
     print(status)
 
 
