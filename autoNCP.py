@@ -27,7 +27,7 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
 
     # 表格url与提交url不同, 否则提交失败
     urlForm = 'https://wxxy.csu.edu.cn/ncov/wap/default/index'
-    urlSubmit = 'https://wxxy.csu.edu.cn/ncov/wap/default/index'
+    urlSubmit = 'https://wxxy.csu.edu.cn/ncov/wap/default/save'
 
     # 表格请求头
     formHeaders = {
@@ -52,43 +52,108 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
 
     # 填表信息
     formData = {
-        'actionType': 'addRbxx',
-        'userLoginId': user,
-
-        # 所在城市编码 / 名称
-        'szcsbm': loc_code,
-        'szcsmc': loc_name,
-
-        # 是否经停 / 说明
-        'sfjt': '0',
-        'sfjtsm': '',
-
-        # 是否接触人员 / 说明
-        'sfjcry': '0',
-        'sfjcrysm': '',
-
-        # 是否接触确诊
-        'sfjcqz': '0',
-
-        # 是否有症状
-        'sfyzz': '0',
-
-        # 是否确诊 / 异常情况说明
-        'sfqz': '0',
-        'ycqksm': '',
-
-        # 健康情况 / 说明
-        'sfjkqk': '0',
-        'jkqksm': '',
-
-        # 隔离情况 / 隔离开始日期 / 隔离结束日期 / tbly和sso是啥意思？？？
-        'glqk': '0',
+        'jcjgqr': '0',
+        'sfjcjwggry': '0',
+        'szgjcs': '',
+        'szcs': '',
+        'szgj': '',
+        'sfcysjh': '0',
+        'dqszyqfxdj': '',
+        'dzjkmys': '',
+        'sffx': '1',
+        'nj': '2017级',
+        'njqt': '',
+        'zybj': '交运1703',
+        'xslb': '本科生',
+        'sfbys': '0',
+        'cjtw': '',
+        'wjtw': '',
+        'wujtw': '',
+        'sfywcxyxd': '0',
+        'sffdypz': '0',
+        'cxsj': '',
+        'fxsj': '',
+        'cxyy': '',
+        'ddd': '',
+        'tjd': '',
+        'cxjtfs': '',
+        'cxjtfsqt': '',
+        'ywqtsm': '0',
+        'xxqk': '',
+        'sfjcyqzgfxdq': '0',
+        'sfjtyqzgfxdq': '0',
+        'tw': '3',
+        'sfcxtz': '0',
+        'sfjcbh': '0',
+        'sfcxzysx': '0',
+        'qksm': '',
+        'sfyyjc': '0',
+        'remark': '',
+        'address': '湖南省长沙市天心区文源街道青年路中南大学铁道学院',
+        'geo_api_info': '{"type":"complete","position":{"Q":28.140346137153,"R":112.99368516710103,"lng":112.993685,"lat":28.140346},"location_type":"html5","message":"Get ipLocation failed.Get geolocation success.Convert Success.Get address success.","accuracy":129,"isConverted":true,"status":1,"addressComponent":{"citycode":"0731","adcode":"430103","businessAreas":[{"name":"雨花亭","id":"430111","location":{"Q":28.141963,"R":113.00517500000001,"lng":113.005175,"lat":28.141963}},{"name":"新开铺","id":"430103","location":{"Q":28.135278,"R":112.972872,"lng":112.972872,"lat":28.135278}}],"neighborhoodType":"","neighborhood":"","building":"","buildingType":"","street":"韶山南路","streetNumber":"22号","country":"中国","province":"湖南省","city":"长沙市","district":"天心区","township":"文源街道"},"formattedAddress":"湖南省长沙市天心区文源街道青年路中南大学铁道学院","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}',
+        'area': '湖南省 长沙市 天心区',
+        'province': '湖南省',
+        'city': '长沙市',
+        'sfzx': '1',
+        'sfjcwhry': '0',
+        'sfjchbry': '0',
+        'sfcyglq': '0',
+        'gllx': '',
         'glksrq': '',
-        'gljsrq': '',
-        'tbly': 'sso',
+        'jcbhlx': '',
+        'jcbhrq': '',
+        'bztcyy': '1',
+        'sftjhb': '0',
+        'sftjwh': '0',
+        'cysjh': '',
+        'jcjg': '',
+        'date': '20210309',
+        'uid': '282216',
+        'created': '1615219706',
+        'jcqzrq': '',
+        'sfjcqz': '',
+        'szsqsfybl': '0',
+        'sfsqhzjkk': '0',
+        'sqhzjkkys': '',
+        'sfygtjzzfj': '0',
+        'gtjzzfjsj': '',
+        'id': '21789456',
+        'gwszdd': '',
+        'sfyqjzgc': '',
+        'jrsfqzys': '',
+        'jrsfqzfy': '',
+        'ismoved': '0',
+    }
 
-        # 本人承诺(此参数在服务器post里没找到)
-        'brcn': '0',
+    submit_header = {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Date': 'Tue, 09 Mar 2021 16:12:59 GMT',
+        'Expires': 'Thu, 19 Nov 1981 08:52:00 GMT',
+        'Pragma': 'no-cache',
+        'Server': 'dws',
+        'Transfer-Encoding': 'chunked',
+        'Vary': 'Accept-Encoding',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+        'Connection': 'keep-alive',
+        'Content-Length': '2775',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Cookie': 'UM_distinctid=175720c7d89362-0e1b75bb654a54-71415a3a-144000-175720c7d8a300; _ga=GA1.3.1031687555.1581936039; eai-sess=f70l9a9cvfv4cp1395nm65gs02; UUkey=cb0f2de43b33858b5872eaee7cfc813d; BIGipServerpool_wxxy.csu.edu.cn=2276632768.20480.0000; Hm_lvt_48b682d4885d22a90111e46b972e3268=1615265057,1615265230,1615265631,1615306096; Hm_lpvt_48b682d4885d22a90111e46b972e3268=1615306096',
+        'Host': 'wxxy.csu.edu.cn',
+        'Origin': 'https://wxxy.csu.edu.cn',
+        'Referer': 'https://wxxy.csu.edu.cn/ncov/wap/default/index',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36 Edg/89.0.774.45',
+        'X-Requested-With': 'XMLHttpRequest',
     }
 
     logData = {
@@ -110,26 +175,26 @@ def submitForm(user='', passwd='', loc_code='', loc_name=''):
     else:
         print('获取表单失败')
 
-
     # TODO(Steve X): REMOVE BEFORE FLIGHT
-    session.post(url=urlSubmit, data=formData, headers=formHeaders, timeout=5)
-    res = session.get(urlForm, timeout=5).text
+    res = session.post(url=urlSubmit, data=formData, headers=submit_header, timeout=5).text
+    # res = session.get(urlForm, timeout=5).text
     session.close()
+    print(res)
 
-    # 成功信息, 此处为原网页设置, 不可随意更改
-    success = '您已成功提交今日上报，重新提交将覆盖上一次的信息。'
-    status = res.find('重新提交将覆盖上一次的信息')
+    # # 成功信息, 此处为原网页设置, 不可随意更改
+    # success = '您已成功提交今日上报，重新提交将覆盖上一次的信息。'
+    # status = res.find('重新提交将覆盖上一次的信息')
 
-    if status != -1:
-        print(fs.log_cn(logData))
-        print(success)
-        print('-' * 100)
+    # if status != -1:
+    #     print(fs.log_cn(logData))
+    #     print(success)
+    #     print('-' * 100)
 
-        return True
-    else:
-        print(fs.setColor(string='提交失败, 请重试', color='redBack'))
-        print(status)
-        return False
+    #     return True
+    # else:
+    #     print(fs.setColor(string='提交失败, 请重试', color='redBack'))
+    #     print(status)
+    #     return False
 
 
 if __name__ == "__main__":
