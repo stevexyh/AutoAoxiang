@@ -25,41 +25,44 @@ def login(user='', passwd='', url_login='https://uis.nwpu.edu.cn/cas/login', key
         status = -1: 密码错误
     '''
 
-    session = requests.Session()
-    session.get(url_login)
+    try:
+        session = requests.Session()
+        session.get(url_login)
 
-    # 登录页请求头
-    header = {
-        'Origin': 'https://uis.nwpu.edu.cn',
-        'Referer': url_login,
-        'Content-Type': 'application/x-www-form-urlencoded',
-    }
+        # 登录页请求头
+        header = {
+            'Origin': 'https://uis.nwpu.edu.cn',
+            'Referer': url_login,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
 
-    # 登录信息
-    loginData = {
-        'username': user,
-        'password': passwd,
-        'currentMenu': 1,
-        'execution': 'e1s1',
-        '_eventId': 'submit',
-    }
+        # 登录信息
+        loginData = {
+            'username': user,
+            'password': passwd,
+            'currentMenu': 1,
+            'execution': 'e1s1',
+            '_eventId': 'submit',
+        }
 
-    res = session.post(url=url_login, data=loginData, headers=header).text
+        res = session.post(url=url_login, data=loginData, headers=header).text
 
-    if res.find(keyword) != -1:
-        print(f'用户:{user}'+formatString.setColor(string='登录成功√', color='greenFore'))
-        status = 1
-    else:
-        if res.find('Invalid credentials.') != -1:
-            print(f'用户:{user}'+formatString.setColor(string='密码错误, 请重试', color='redBack'))
-            status = -1
+        if res.find(keyword) != -1:
+            print(f'用户:{user}'+formatString.setColor(string='登录成功√', color='greenFore'))
+            status = 1
         else:
-            print(
-                f'用户:{user}' +
-                formatString.setColor(
-                    string='密码正确, 登录失败, 准备重新登录...', color='redBack'
-                ))
-            status = 0
+            if res.find('Invalid credentials.') != -1:
+                print(f'用户:{user}'+formatString.setColor(string='密码错误, 请重试', color='redBack'))
+                status = -1
+            else:
+                print(
+                    f'用户:{user}' +
+                    formatString.setColor(
+                        string='密码正确, 登录失败, 准备重新登录...', color='redBack'
+                    ))
+                status = 0
+    except Exception as exc:
+        print(exc)
 
     return session, status
 
