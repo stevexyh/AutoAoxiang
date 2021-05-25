@@ -132,18 +132,13 @@ room_4 = {
 
 room_time = [
     {
-        'start': '1030',
-        'end': '1330',
-        'name': '上午',
-    },
-    {
-        'start': '1359',
-        'end': '1659',
+        'start': '1400',
+        'end': '1700',
         'name': '下午',
     },
     {
-        'start': '1820',
-        'end': '2120',
+        'start': '1800',
+        'end': '2100',
         'name': '晚上',
     },
 ]
@@ -164,7 +159,7 @@ def get_room_time(i):
     return room_time[i % len(room_time)]
 
 
-def get_room(room: str = '705', num: int = 4, rand_room: bool = False) -> str:
+def get_room(room: str = '705', num: int = 2, rand_room: bool = False) -> str:
     '''
     descriptions
 

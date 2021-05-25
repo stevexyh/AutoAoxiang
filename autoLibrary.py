@@ -66,7 +66,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
         now_time = int(now.strftime('%H%M'))
         reserve_date = (now+datetime.timedelta(days=2, minutes=10)).strftime('%Y-%m-%d')
 
-        if 2355 <= now_time or now_time <= 15:  # or DEBUG:
+        if 2355 <= now_time or now_time <= 15 or DEBUG:
             try:
                 res = conn.get(url=url_reserve)
                 session_id = conn.cookies.get_dict().get('ASP.NET_SessionId')
@@ -157,7 +157,7 @@ def reserve(username, password, room: str = '711', i: int = 0):
 
 
 def init_users(user: dict):
-    return [threading.Thread(target=reserve, args=[u['userid'], u['passwd'], '717', i]) for i, u in enumerate(user)]
+    return [threading.Thread(target=reserve, args=[u['userid'], u['passwd'], '710', i]) for i, u in enumerate(user)]
 
 
 def start_user(user_list):
